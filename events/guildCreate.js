@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 
-module.exports = (callback, guild) => {
+module.exports = (cbot, guild) => {
     console.log(`Теперь я модерирую ${guild.name} (${guild.id})`)
         var guildCreateEmbed = new Discord.RichEmbed()
             .setColor("#b87dff")

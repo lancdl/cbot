@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 
-module.exports = (callback, role) => {
+module.exports = (cbot, role) => {
     console.log(`На ${role.guild.name} (${role.guild.id}) была удалена роль ${role.name}`)
     var roleDeleteEmbed = new Discord.RichEmbed()
         .setColor("#f5ad42")

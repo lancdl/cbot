@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 
-module.exports = (callback, member) => {
+module.exports = (cbot, member) => {
     console.log(`${member.user.tag} (${member.user.id}) вышел/был забанен/кикнут на ${member.guild.name} (${member.guild.id})`)
         var removeEmbed = new Discord.RichEmbed()
             .setColor("#ff4242")

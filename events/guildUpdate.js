@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 
-module.exports = (callback, oldGuild, newGuild) => {
+module.exports = (cbot, oldGuild, newGuild) => {
     console.log(`На сервере ${newGuild.name} произошло изменение`)
 
     var guildUpdateEmbed = new Discord.RichEmbed()

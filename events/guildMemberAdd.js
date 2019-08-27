@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 
-module.exports = (callback, member) => {
+module.exports = (cbot, member) => {
     console.log(`${member.user.tag} (${member.user.id}) зашел на ${member.guild.name} (${member.guild.id})`)
         var joinEmbed = new Discord.RichEmbed()
             .setColor("#ff4242")

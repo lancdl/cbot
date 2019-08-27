@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const config = require('./config_defaults')
 const fs = require('fs')
-const callback = new Discord.Client()
+const cbot = new Discord.Client()
 
 const io = require('@pm2/io')
 
@@ -28,31 +28,31 @@ const rl = require('readline').createInterface({
     output: process.stdout
 })
 
-callback.login(config.token)
+cbot.login(config.token)
 
-callback.on('ready', ready => {
-    console.log(`${callback.user.tag}:\x1b[32mON\x1b[0m`)
+cbot.on('ready', ready => {
+    console.log(`${cbot.user.tag}:\x1b[32mON\x1b[0m`)
 
-    callback.user.setActivity("lancdl.github.io/callback/")
+    cbot.user.setActivity("lancdl.github.io/callback/")
 
-    callback.users.get(config.dev_id).send('Бот запущен.')
+    cbot.users.get(config.dev_id).send('Бот запущен.')
 
     rl.on('line', function(guildsSize) {
         if (guildsSize !== "guilds") {
             return;
         }
-        console.log(`Бот находится на ${callback.guilds.size} серверах.\n${callback.guilds.map(g=>g.name).join("\n")}`)
+        console.log(`Бот находится на ${cbot.guilds.size} серверах.\n${cbot.guilds.map(g=>g.name).join("\n")}`)
     })
 
     rl.on('line', function(usersSize) {
         if (usersSize !== "users") {
             return;
         }
-        console.log(`К боту подключено ${callback.users.size} пользователей.\n${callback.users.map(u=>u.tag).join("\n")}`)
+        console.log(`К боту подключено ${cbot.users.size} пользователей.\n${cbot.users.map(u=>u.tag).join("\n")}`)
     })
 })
 
-callback.on("message", async message => {
+cbot.on("message", async message => {
     let prefix = "!"
 
     if (message.channel.type === "dm") {
@@ -67,7 +67,7 @@ callback.on("message", async message => {
         if(message.author.id !== config.dev_id) {
             return;
         }
-        return message.author.send(`Бот находится на ${callback.guilds.size} серверах.\n${callback.guilds.map(g=>g.name).join("\n")}`)
+        return message.author.send(`Бот находится на ${cbot.guilds.size} серверах.\n${cbot.guilds.map(g=>g.name).join("\n")}`)
     }
 
     if(message.content === `${prefix}users`) {
@@ -76,7 +76,7 @@ callback.on("message", async message => {
         if(message.author.id !== config.dev_id) {
             return;
         }
-        return message.author.send(`К боту подключено ${callback.users.size} пользователей.\n${callback.users.map(u=>u.tag).join("\n")}`)
+        return message.author.send(`К боту подключено ${cbot.users.size} пользователей.\n${cbot.users.map(u=>u.tag).join("\n")}`)
     }
 
     if (message.content === `${prefix}проверка`) {
@@ -151,12 +151,12 @@ fs.readdir('./events', (err, files) => {
         const evt = require(`./events/${file}`)
         let evtName = file.split('.')[0]
         console.log(`Загружен ивент '${evtName}'`)
-        callback.on(evtName, evt.bind(null, callback))
+        cbot.on(evtName, evt.bind(null, cbot))
     })
 })
 
 /*/
-callback.on('guildMemberAdd', member => {
+cbot.on('guildMemberAdd', member => {
     console.log(`${member.user.tag} зашел на ${member.guild.name}`)
         var joinEmbed = new Discord.RichEmbed()
             .setColor("#ff4242")
@@ -172,7 +172,7 @@ callback.on('guildMemberAdd', member => {
 })
 /*/
 /*/
-callback.on('guildCreate', guild => {
+cbot.on('guildCreate', guild => {
     console.log(`Теперь я модерирую ${guild.name}`)
         var guildCreateEmbed = new Discord.RichEmbed()
             .setColor("#b87dff")
@@ -182,7 +182,7 @@ callback.on('guildCreate', guild => {
 })
 /*/
 /*/
-callback.on('guildDelete', guild => {
+cbot.on('guildDelete', guild => {
     console.log(`${guild.name} отключили нас...`)
         var guildDeleteEmbed = new Discord.RichEmbed()
             .setColor("#b87dff")
@@ -192,7 +192,7 @@ callback.on('guildDelete', guild => {
 })
 /*/
 /*/
-callback.on('guildMemberRemove', member => {
+cbot.on('guildMemberRemove', member => {
     console.log(`${member.user.tag} вышел/был забанен/кикнут на ${member.guild.name}`)
         var removeEmbed = new Discord.RichEmbed()
             .setColor("#ff4242")
@@ -204,7 +204,7 @@ callback.on('guildMemberRemove', member => {
 })
 /*/
 /*/
-callback.on('guildUpdate', (oldGuild, newGuild) => {
+cbot.on('guildUpdate', (oldGuild, newGuild) => {
     console.log(`На ${newGuild.name} произошло изменение`)
     var guildUpdateEmbed = new Discord.RichEmbed()
         .setColor("#4287f5")
@@ -227,7 +227,7 @@ callback.on('guildUpdate', (oldGuild, newGuild) => {
 })
 /*/
 /*/
-callback.on('roleCreate', role => {
+cbot.on('roleCreate', role => {
     console.log(`На ${role.guild.name} была создана роль ${role.name}`)
     var roleCreateEmbed = new Discord.RichEmbed()
         .setColor("#f5ad42")
@@ -238,7 +238,7 @@ callback.on('roleCreate', role => {
 })
 /*/
 /*/
-callback.on('roleDelete', role => {
+cbot.on('roleDelete', role => {
     console.log(`На ${role.guild.name} была удалена роль ${role.name}`)
     var roleDeleteEmbed = new Discord.RichEmbed()
         .setColor("#f5ad42")
@@ -249,7 +249,7 @@ callback.on('roleDelete', role => {
 })
 /*/
 /*/
-callback.on('roleUpdate', (oldRole, newRole) => {
+cbot.on('roleUpdate', (oldRole, newRole) => {
     console.log(`На ${newRole.guild.name} была изменена роль ${oldRole.name} на ${newRole.name}`)
     var roleUpdateEmbed = new Discord.RichEmbed()
         .setColor("#f5ad42")
@@ -266,10 +266,10 @@ callback.on('roleUpdate', (oldRole, newRole) => {
 })
 /*/
 
-callback.on('guildBanAdd', guild => {
+cbot.on('guildBanAdd', guild => {
 
 })
 
-callback.on('guildBanRemove', guild => {
+cbot.on('guildBanRemove', guild => {
 
 })
