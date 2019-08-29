@@ -3,16 +3,6 @@ const config = require('./config_defaults')
 const fs = require('fs')
 const cbot = new Discord.Client()
 
-const io = require('@pm2/io')
-
-io.init({
-  metrics: {
-    network: {
-      ports: true
-    }
-  }
-})
-
 /*/const mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1:27017/test', { useNewUrlParser: true });
 
@@ -37,18 +27,33 @@ cbot.on('ready', ready => {
 
     cbot.users.get(config.dev_id).send('Бот запущен.')
 
-    rl.on('line', function(guildsSize) {
-        if (guildsSize !== "guilds") {
+    rl.on('line', function(guildSize) {
+        if (guildSize !== "guilds") {
             return;
         }
         console.log(`Бот находится на ${cbot.guilds.size} серверах.\n${cbot.guilds.map(g=>g.name).join("\n")}`)
     })
 
-    rl.on('line', function(usersSize) {
-        if (usersSize !== "users") {
+    rl.on('line', function(userSize) {
+        if (userSize !== "users") {
             return;
         }
         console.log(`К боту подключено ${cbot.users.size} пользователей.\n${cbot.users.map(u=>u.tag).join("\n")}`)
+    })
+
+    rl.on('line', function(botUptime) {
+    	if(botUptime !== "uptime") {
+    		return;
+    	}
+			let totalSeconds = (cbot.uptime / 1000);
+			let days = Math.floor(totalSeconds / 86400);
+			let hours = Math.floor(totalSeconds / 3600);
+			totalSeconds %= 3600;
+			let minutes = Math.floor(totalSeconds / 60);
+			let seconds = totalSeconds % 60;
+			let uptime = `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`;
+			
+    	console.log(uptime)
     })
 })
 
@@ -154,117 +159,6 @@ fs.readdir('./events', (err, files) => {
         cbot.on(evtName, evt.bind(null, cbot))
     })
 })
-
-/*/
-cbot.on('guildMemberAdd', member => {
-    console.log(`${member.user.tag} зашел на ${member.guild.name}`)
-        var joinEmbed = new Discord.RichEmbed()
-            .setColor("#ff4242")
-            .setTitle("💖")
-            .setDescription(`Сервер: ${member.guild.name}`)
-            .addField(`${member.user.tag}`, " зашел на сервер", true)
-            .addField("Кол-во участников", member.guild.memberCount)
-        member.guild.owner.send(joinEmbed)
-        if(member.guild.id === "403271253290647562"){
-            let myRole = member.guild.roles.find(role => role.name === "Фалконовец")
-            return member.addRole(myRole).catch(console.error);
-        }
-})
-/*/
-/*/
-cbot.on('guildCreate', guild => {
-    console.log(`Теперь я модерирую ${guild.name}`)
-        var guildCreateEmbed = new Discord.RichEmbed()
-            .setColor("#b87dff")
-            .addField("💌", "Привет! Отныне я буду сообщать тебе о новых событиях на твоем сервере!")
-            .addField("⚙", "Немного о функционале\nЧтобы получить информацию о своём сервере напиши команду `!инфо` (ВАЖНО! Писать нужно на своём сервере, чтобы бот понял о каком сервере идёт речь.), а все остальные действия бот будет выполнять сам (уведомление об изменениях будут приходить Вам в личные сообщения).")
-        guild.owner.send(guildCreateEmbed)            
-})
-/*/
-/*/
-cbot.on('guildDelete', guild => {
-    console.log(`${guild.name} отключили нас...`)
-        var guildDeleteEmbed = new Discord.RichEmbed()
-            .setColor("#b87dff")
-            .setTitle("🤔")
-            .addField("Может возникла какая-то ошибка?", "Вы уверены что хотите отказаться от модерации с помощью нашего бота?\nЕсли это ошибка, то вы сможете пригласить бота снова по этой ссылке: `ссылка`")
-        guild.owner.send(guildDeleteEmbed)
-})
-/*/
-/*/
-cbot.on('guildMemberRemove', member => {
-    console.log(`${member.user.tag} вышел/был забанен/кикнут на ${member.guild.name}`)
-        var removeEmbed = new Discord.RichEmbed()
-            .setColor("#ff4242")
-            .setTitle("💔")
-            .setDescription(`Сервер: ${member.guild.name}`)
-            .addField(`${member.user.tag}`, " покинул нас/был забанен/кикнут", true)
-            .addField("Кол-во участников", member.guild.memberCount)
-        member.guild.owner.send(removeEmbed)
-})
-/*/
-/*/
-cbot.on('guildUpdate', (oldGuild, newGuild) => {
-    console.log(`На ${newGuild.name} произошло изменение`)
-    var guildUpdateEmbed = new Discord.RichEmbed()
-        .setColor("#4287f5")
-        .setTitle("⚙")
-        .setDescription(newGuild.name)
-        .addField("oldName", oldGuild.name)
-        .addField("oldNameAcronym", oldGuild.nameAcronym)
-        .addField("oldRegion", oldGuild.region)
-        .addField("oldVerificationLevel", oldGuild.verificationLevel)
-        .addField("oldMFALevel", oldGuild.mfaLevel)
-        .addField("oldVerified", oldGuild.verified)
-        .addBlankField()
-        .addField("newName", newGuild.name)
-        .addField("newNameAcronym", newGuild.nameAcronym)
-        .addField("newRegion", newGuild.region)
-        .addField("newVerificationLevel", newGuild.verificationLevel)
-        .addField("newMFALevel", newGuild.mfaLevel)
-        .addField("newVerified", newGuild.verified)
-    newGuild.owner.send(guildUpdateEmbed)
-})
-/*/
-/*/
-cbot.on('roleCreate', role => {
-    console.log(`На ${role.guild.name} была создана роль ${role.name}`)
-    var roleCreateEmbed = new Discord.RichEmbed()
-        .setColor("#f5ad42")
-        .setTitle("🔔")
-        .setDescription(role.guild.name)
-        .addField("Создана роль", role.name)
-    role.guild.owner.send(roleCreateEmbed)
-})
-/*/
-/*/
-cbot.on('roleDelete', role => {
-    console.log(`На ${role.guild.name} была удалена роль ${role.name}`)
-    var roleDeleteEmbed = new Discord.RichEmbed()
-        .setColor("#f5ad42")
-        .setTitle("🔔")
-        .setDescription(role.guild.name)
-        .addField("Удалена роль", role.name)
-    role.guild.owner.send(roleDeleteEmbed)
-})
-/*/
-/*/
-cbot.on('roleUpdate', (oldRole, newRole) => {
-    console.log(`На ${newRole.guild.name} была изменена роль ${oldRole.name} на ${newRole.name}`)
-    var roleUpdateEmbed = new Discord.RichEmbed()
-        .setColor("#f5ad42")
-        .setTitle("🔔")
-        .setDescription(newRole.guild.name)
-        .addField("oldName", oldRole.name)
-        .addField("oldPermissions", oldRole.permissions)
-        .addField("oldColor", oldRole.color)
-        .addBlankField()
-        .addField("newName", newRole.name)
-        .addField("newColor", newRole.color)
-        .addField("newPermissions", newRole.permissions)
-    newRole.guild.owner.send(roleUpdateEmbed)   
-})
-/*/
 
 cbot.on('guildBanAdd', guild => {
 
