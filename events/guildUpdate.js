@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 
 module.exports = (cbot, oldGuild, newGuild) => {
-    console.log(`На сервере ${newGuild.name} произошло изменение`)
+    console.log(`На сервере ${newGuild.name} (${newGuild.id}) произошло изменение`)
 
     var guildUpdateEmbed = new Discord.RichEmbed()
         .setColor("#4287f5")
